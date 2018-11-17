@@ -1,70 +1,50 @@
 import React, { Component } from "react";
+import TextInput from "./TextInput";
 
 class Form extends Component {
   constructor(props) {
     super(props);
+    this.handleFirstNameChange = this.handleFirstNameChange.bind(this);
+    this.handleSecondNameChange = this.handleSecondNameChange.bind(this);
+    this.handleTownChange = this.handleTownChange.bind(this);
     this.state = {
       firstName: "",
       secondName: "",
       town: ""
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
-    const name = event.target.name;
-    const value = event.target.value;
-    this.setState({ [name]: value });
+  handleFirstNameChange(value) {
+    console.log("***f***", this.state.firstName);
+    this.setState({ firstName: value });
   }
 
-  handleSubmit(event) {
-    alert(
-      "A name was submitted: " +
-        this.state.firstName +
-        this.state.secondName +
-        this.state.town
-    );
-    event.preventDefault();
+  handleSecondNameChange(value) {
+    console.log("***s***", this.state.secondName);
+    this.setState({ secondName: value });
+  }
+
+  handleTownChange(value) {
+    console.log("***t***", this.state.town);
+    this.setState({ town: value });
   }
 
   render() {
+    const firstName = this.state.firstName;
+    const secondName = this.state.secondName;
+    const town = this.state.town;
+
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          First Name:
-          <input
-            type="text"
-            value={this.state.firstName}
-            onChange={this.handleChange}
-            className="form-control"
-            name="firstName"
-            placeholder="First Name"
-          />
-        </label>
-        <label>
-          Second Name:
-          <input
-            type="text"
-            value={this.state.secondName}
-            onChange={this.handleChange}
-            className="form-control"
-            name="secondName"
-            placeholder="Second Name"
-          />
-        </label>
-        <label>
-          Town:
-          <input
-            type="text"
-            value={this.state.town}
-            onChange={this.handleChange}
-            className="form-control"
-            name="town"
-            placeholder="Town"
-          />
-        </label>
+      <form>
+        <TextInput
+          value={firstName}
+          onInputChange={this.handleFirstNameChange}
+        />
+        <TextInput
+          value={secondName}
+          onInputChange={this.handleSecondNameChange}
+        />
+        <TextInput value={town} onInputChange={this.handleTownChange} />
         <input type="submit" value="Submit" />
       </form>
     );
