@@ -5,6 +5,23 @@ import sinon from "sinon";
 import FormInput from "../FormInput";
 
 describe("Form spec", function() {
+  it("should render all the inputs as not invalid by default");
+  it(
+    "should render the first name input as invalid on submit if under 3 characters"
+  );
+  it(
+    "should render the second name input as invalid on submit if under 3 characters"
+  );
+  it("should render the town input as invalid on submit if under 3 characters");
+  it(
+    "should render the email input as invalid on submit if it doesnt look like an email"
+  );
+  it(
+    "should render the phone number input as invalid on submit if it doesnt look like a phone number"
+  );
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
   const getWrapper = props => shallow(<Form {...props} />);
 
   it("should render form", () => {
