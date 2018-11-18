@@ -1,8 +1,8 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import Form from "../Components/Form";
+import Form from "../Form";
 import sinon from "sinon";
-import FormInput from "../Components/FormInput";
+import FormInput from "../FormInput";
 
 describe("Form spec", function() {
   const getWrapper = props => shallow(<Form {...props} />);

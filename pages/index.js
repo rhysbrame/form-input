@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 import Head from "next/head";
-import Header from "./Components/Header";
-import Jumbo from "./Components/Jumbo";
-import Form from "./Components/Form";
+import Header from "../Components/Header";
+import Jumbo from "../Components/Jumbo";
+import Form from "../Components/Form/Form";
 
 export default () => (
   <Fragment>
