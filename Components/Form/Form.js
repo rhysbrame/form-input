@@ -2,184 +2,115 @@ import React, { Component, Fragment } from "react";
 import FormInput from "./FormInput";
 import { FormErrors } from "./FormErrors";
 
+const minLength = length => value => value.length >= length;
+const matchesRegex = regex => value => value.match(regex);
+
+const validators = {
+  firstName: { test: minLength(3), errorMessage: "First name is too short" },
+  secondName: { test: minLength(3), errorMessage: "Second name is too short" },
+  town: { test: minLength(3), errorMessage: "Town is too short" },
+  email: {
+    test: matchesRegex(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i),
+    errorMessage: "Email is invalid"
+  },
+  phoneNumber: {
+    test: matchesRegex(/^\d{11}$|^$/),
+    errorMessage: "Phone number is not a valid number with 11 digits"
+  }
+};
+
 class Form extends Component {
   constructor(props) {
     super(props);
-    this.handleFirstNameChange = this.handleFirstNameChange.bind(this);
-    this.handleSecondNameChange = this.handleSecondNameChange.bind(this);
-    this.handleTownChange = this.handleTownChange.bind(this);
-    this.handlePhoneNumberChange = this.handlePhoneNumberChange.bind(this);
-    this.handleEmailChange = this.handleEmailChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
-      firstName: "",
-      secondName: "",
-      town: "",
-      phoneNumber: "",
-      email: "",
-      formErrors: {
+      values: {
         firstName: "",
         secondName: "",
         town: "",
         phoneNumber: "",
         email: ""
       },
-      firstNameValid: false,
-      secondNameValid: false,
-      townValid: false,
-      phoneNumberValid: false,
-      emailValid: false,
-      formValid: false
+      formErrors: {
+        firstName: null,
+        secondName: null,
+        town: null,
+        phoneNumber: null,
+        email: null
+      }
     };
   }
 
-  validateField(fieldName, value) {
-    let fieldValidationErrors = this.state.formErrors;
-    let firstNameValid = this.state.firstNameValid;
-    let secondNameValid = this.state.secondNameValid;
-    let townValid = this.state.townValid;
-    let phoneNumberValid = this.state.phoneNumberValid;
-    let emailValid = this.state.emailValid;
+  validateForm(callback) {
+    const { values } = this.state;
+    const errors = {};
 
-    switch (fieldName) {
-      case "firstName":
-        firstNameValid = value.length >= 3;
-        fieldValidationErrors.firstName = firstNameValid ? "" : " is too short";
-        break;
-      case "secondName":
-        secondNameValid = value.length >= 3;
-        fieldValidationErrors.secondName = secondNameValid
-          ? ""
-          : " is too short";
-        break;
-      case "town":
-        townValid = value.length >= 3;
-        fieldValidationErrors.town = townValid ? "" : " is too short";
-        break;
-      case "email":
-        emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-        fieldValidationErrors.email = emailValid ? "" : " is invalid";
-        break;
-      case "phoneNumber":
-        phoneNumberValid = value.match(/^\d{11}$|^$/);
-        fieldValidationErrors.phoneNumber = phoneNumberValid
-          ? ""
-          : " not a valid phone number with 11 digits";
-        break;
-      default:
-        break;
-    }
-    this.setState(
-      {
-        formErrors: fieldValidationErrors,
-        emailValid: emailValid,
-        firstNameValid: firstNameValid,
-        secondNameValid: secondNameValid,
-        townValid: townValid,
-        phoneNumberValid: phoneNumberValid
-      },
-      this.validateForm
-    );
+    Object.keys(values).forEach(fieldName => {
+      const { test, errorMessage } = validators[fieldName];
+      const value = values[fieldName];
+      const valid = test(value);
+      errors[fieldName] = !valid ? errorMessage : null;
+    });
+
+    this.setState({ formErrors: errors }, callback);
   }
 
-  validateForm() {
+  setField = fieldName => value => {
     this.setState({
-      formValid:
-        this.state.emailValid &&
-        this.state.firstNameValid &&
-        this.state.secondNameValid &&
-        this.state.townValid &&
-        this.state.phoneNumberValid
+      values: {
+        ...this.state.values,
+        [fieldName]: value
+      }
     });
-  }
+  };
 
-  handleFirstNameChange(value) {
-    this.setState({ firstName: value }, () => {
-      this.validateField("firstName", value);
-    });
-  }
-
-  handleSecondNameChange(value) {
-    this.setState({ secondName: value }, () => {
-      this.validateField("secondName", value);
-    });
-  }
-
-  handleTownChange(value) {
-    this.setState({ town: value }, () => {
-      this.validateField("town", value);
-    });
-  }
-
-  handlePhoneNumberChange(value) {
-    this.setState({ phoneNumber: value }, () => {
-      this.validateField("phoneNumber", value);
-    });
-  }
-
-  handleEmailChange(value) {
-    this.setState({ email: value.toLowerCase() }, () => {
-      this.validateField("email", value);
-    });
-  }
-
-  handleSubmit(event) {
-    const dataJSON = {
-      "First Name:": this.state.firstName,
-      "Second Name:": this.state.secondName,
-      "Town:": this.state.town,
-      "Phone Number:": this.state.phoneNumber,
-      "Email:": this.state.email
-    };
+  handleSubmit = event => {
+    this.validateForm();
     //keep this console.log here to send final data object
-    console.log("Form Data:", dataJSON);
+    console.log("Form Data:", this.state.values);
     event.preventDefault();
-  }
+  };
 
   render() {
-    const firstName = this.state.firstName;
-    const secondName = this.state.secondName;
-    const town = this.state.town;
-    const phoneNumber = this.state.phoneNumber;
-    const email = this.state.email;
+    const { values, formErrors } = this.state;
 
     return (
       <Fragment>
         <div style={{ ["textAlign"]: "center" }}>
           <div>
-            <FormErrors formErrors={this.state.formErrors} />
+            <FormErrors formErrors={formErrors} />
           </div>
           <form onSubmit={this.handleSubmit}>
             <FormInput
-              value={firstName}
-              onInputChange={this.handleFirstNameChange}
+              value={values.firstName}
+              onInputChange={this.setField("firstName")}
               label="First Name:"
+              invalid={formErrors.firstName}
             />
             <FormInput
-              value={secondName}
-              onInputChange={this.handleSecondNameChange}
+              value={values.secondName}
+              onInputChange={this.setField("secondName")}
               label="Second Name:"
+              invalid={formErrors.secondName}
             />
             <FormInput
-              value={town}
-              onInputChange={this.handleTownChange}
+              value={values.town}
+              onInputChange={this.setField("town")}
               label="Town:"
+              invalid={formErrors.town}
             />
             <FormInput
-              value={phoneNumber}
-              onInputChange={this.handlePhoneNumberChange}
+              value={values.phoneNumber}
+              onInputChange={this.setField("phoneNumber")}
               label="Phone Number:"
+              invalid={formErrors.phoneNumber}
             />
             <FormInput
-              value={email}
-              onInputChange={this.handleEmailChange}
+              value={values.email}
+              onInputChange={this.setField("email")}
               label="Email:"
+              invalid={formErrors.email}
             />
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={!this.state.formValid}
-            >
+            <button type="submit" className="btn btn-primary">
               Submit
             </button>
           </form>

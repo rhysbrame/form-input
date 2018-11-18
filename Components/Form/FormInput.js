@@ -13,12 +13,13 @@ export default class FormInput extends Component {
   render() {
     const input = this.props.value;
     const label = this.props.label;
+    const invalid = this.props.invalid;
     return (
       <div className="form-group">
         <label className="form-label">
           {label}
           <input
-            className="form-control"
+            className={`form-control ${invalid ? "is-invalid" : ""}`}
             value={input}
             onChange={this.handleChange}
             type="text"
