@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 
 export default class FormInput extends Component {
   constructor(props) {
@@ -14,11 +14,13 @@ export default class FormInput extends Component {
     const input = this.props.value;
     const label = this.props.label;
     const invalid = this.props.invalid;
+
     return (
       <div className="form-group">
         <label className="form-label">
           {label}
           <input
+            id="input"
             className={`form-control ${invalid ? "is-invalid" : ""}`}
             value={input}
             onChange={this.handleChange}
