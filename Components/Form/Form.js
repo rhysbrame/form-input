@@ -24,11 +24,13 @@ class Form extends Component {
     super(props);
     this.state = {
       values: {
-        firstName: "",
-        secondName: "",
-        town: "",
-        phoneNumber: "",
-        email: ""
+        firstName: this.props.firstName || "",
+        secondName: this.props.secondName || "",
+        town: this.props.town || "",
+        phoneNumber: this.props.phoneNumber
+          ? this.props.phoneNumber.replace(/\s+/g, "")
+          : "",
+        email: this.props.email || ""
       },
       formErrors: {
         firstName: null,
@@ -84,33 +86,33 @@ class Form extends Component {
               value={values.firstName}
               onInputChange={this.setField("firstName")}
               label="First Name:"
-              invalid={formErrors.firstName}
+              invalid={Boolean(formErrors.firstName)}
             />
             <FormInput
               value={values.secondName}
               onInputChange={this.setField("secondName")}
               label="Second Name:"
-              invalid={formErrors.secondName}
+              invalid={Boolean(formErrors.secondName)}
             />
             <FormInput
               value={values.town}
               onInputChange={this.setField("town")}
               label="Town:"
-              invalid={formErrors.town}
+              invalid={Boolean(formErrors.town)}
             />
             <FormInput
               value={values.phoneNumber}
               onInputChange={this.setField("phoneNumber")}
               label="Phone Number:"
-              invalid={formErrors.phoneNumber}
+              invalid={Boolean(formErrors.phoneNumber)}
             />
             <FormInput
               value={values.email}
               onInputChange={this.setField("email")}
               label="Email:"
-              invalid={formErrors.email}
+              invalid={Boolean(formErrors.email)}
             />
-            <button type="submit" className="btn btn-primary">
+            <button id="submitButton" type="submit" className="btn btn-primary">
               Submit
             </button>
           </form>
