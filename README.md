@@ -22,13 +22,6 @@ Components are tested with Jest using enzyme.
    - `$ npm run dev`
 1. Navigate to the app at http://localhost:3000/
 
-### Building for production
-
-1. Build the application
-   - `$ npm run build`
-1. Run the "built" version
-   - `$ npm run start`
-
 ## Running tests
 
 ### Unit tests
